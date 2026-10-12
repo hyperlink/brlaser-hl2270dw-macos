@@ -22,3 +22,9 @@ Before release, also run an installer dry run against an existing queue, verify 
 - Clean-machine installation of a browser-downloaded, quarantined release.
 
 No automated test can confirm a sheet actually printed correctly. Report successful additional configurations with model, OS version, transport, paper size, resolution, and features tested; avoid posting private identifiers.
+
+## Signed v0.1.1 package, 2026-10-12
+
+The driver was signed with Developer ID Application (Geneir Solutions), hardened runtime, and a secure timestamp. The installer was signed with Developer ID Installer. The extracted signed driver passed strict signature validation and generated identical HQ1200 output to the unsigned build on the synthetic test raster. The full corresponding source is included in the package.
+
+Apple accepted notarization submission `f97e9dad-df4b-4eac-a0e2-5013fa63d7d2`. Stapling and ticket validation succeeded, and Gatekeeper's installer assessment returned `accepted` with `source=Notarized Developer ID`. These checks do not replace physical printer testing or a separate clean-Mac installation. The signed package has not been installed over the original working queue on the development Mac.

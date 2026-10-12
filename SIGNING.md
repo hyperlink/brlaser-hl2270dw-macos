@@ -1,6 +1,6 @@
 # Developer ID signing and notarization
 
-The published v0.1.0 archive is ad-hoc signed and unnotarized. These instructions prepare a future signed installer; their presence does not mean a notarized release exists.
+The v0.1.1 installer is Developer ID signed and Apple-notarized with a stapled ticket. The older v0.1.0 archive remains ad-hoc signed and unnotarized. These instructions describe how to produce future signed releases.
 
 ## One-time certificate setup
 

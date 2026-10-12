@@ -15,7 +15,18 @@ HQ1200 is Brother's high-quality mode, not a claim of native 1200 × 1200 optica
 
 Other models, USB connections, duplex, and older macOS releases have not been physically tested by this project. The code targets macOS 11 or newer, but that deployment target is not a compatibility guarantee. CUPS/PPD printing must still be available on the installed macOS version.
 
-## Install a release
+## Install the signed, notarized package (recommended)
+
+1. Download `brlaser-hl2270dw-macos-0.1.1.pkg` from [v0.1.1](https://github.com/hyperlink/brlaser-hl2270dw-macos/releases/tag/v0.1.1).
+2. Open it and follow the macOS Installer prompts. The signing identity is **Geneir Solutions**. The driver and installer are Developer ID signed; the installer is Apple-notarized with a stapled ticket.
+3. In **System Settings > Printers & Scanners**, add your HL-2270DW. In **Use > Select Software**, choose **Brother HL-2270DW series, using brlaser v6 (Apple silicon HQ1200)**.
+4. Select HQ1200 and your paper size in the print dialog, then print a test page. Letter is the default.
+
+The package installs driver files, license notices, and complete corresponding source. It does not create a printer queue or change your existing/default printer. The installed source is `/Library/Printers/brlaser-hl2270dw/Source.tar.gz`. A separate matching source download is also attached to the release.
+
+Notarization and Gatekeeper checks passed on the signing Mac. Installation of a browser-downloaded package on a separate clean Mac remains untested. See [TESTING.md](TESTING.md).
+
+## Legacy v0.1.0 archive installation
 
 1. Download `brlaser-hl2270dw-macos-0.1.0.tar.gz` and `SHA256SUMS` from [Releases](https://github.com/hyperlink/brlaser-hl2270dw-macos/releases). The archive contains the ARM64 executable **and all its corresponding source**.
 2. In Terminal, change to the download folder, verify the checksum, and extract:
@@ -43,7 +54,7 @@ Other models, USB connections, duplex, and older macOS releases have not been ph
 
 The installer creates a separate queue, keeps your existing queue, and leaves the default printer unchanged. It refuses to overwrite an existing queue name; use `--queue Another_Name` if needed. Letter is the default paper size; use `--paper A4` for A4. The queue is not shared over the network.
 
-**Signing:** the executable has an ad-hoc signature, not an Apple Developer ID signature, and this release is not notarized. A checksum checks download integrity, not publisher identity. macOS security settings may prevent downloaded code from running. Building from the included source is an alternative; this project does not require disabling SIP or Gatekeeper.
+**Legacy archive signing:** the v0.1.0 executable has an ad-hoc signature, not an Apple Developer ID signature, and this release is not notarized. A checksum checks download integrity, not publisher identity. macOS security settings may prevent downloaded code from running. Building from the included source is an alternative; this project does not require disabling SIP or Gatekeeper.
 
 ## Build from source
 
