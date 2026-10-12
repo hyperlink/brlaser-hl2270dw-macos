@@ -14,7 +14,7 @@ HQ1200 is Brother's high-quality mode (a 1200 × 1200 raster sent with `RAS1200M
 
 ## Install the signed .pkg (recommended)
 
-1. Download `brlaser-hl2270dw-macos-0.1.2.pkg` from [v0.1.2](https://github.com/hyperlink/brlaser-hl2270dw-macos/releases/tag/v0.1.2). The installer is Developer ID signed (identity **Geneir Solutions**); see [TESTING.md](TESTING.md) for the signing and notarization status of each release.
+1. Download `brlaser-hl2270dw-macos-0.1.2.pkg` from [v0.1.2](https://github.com/hyperlink/brlaser-hl2270dw-macos/releases/tag/v0.1.2) (Developer ID signed and Apple-notarized, identity **Geneir Solutions**; verification recorded in [TESTING.md](TESTING.md)).
 2. Open it and follow the Installer prompts.
 3. In **System Settings > Printers & Scanners**, add your HL-2270DW. Under **Use > Select Software**, choose **Brother HL-2270DW series, using brlaser v6 (Apple silicon HQ1200)**.
 4. Pick HQ1200 and your paper size in the print dialog, then print.

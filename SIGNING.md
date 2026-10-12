@@ -1,6 +1,6 @@
 # Developer ID signing and notarization
 
-These instructions describe how to produce a Developer ID signed, Apple-notarized installer. The recorded notarization evidence (see [TESTING.md](TESTING.md)) covers the v0.1.1 package; the v0.1.2 package is rebuilt by the updated `build-pkg.sh` and must be re-notarized before being published as notarized.
+The v0.1.2 installer is Developer ID signed and Apple-notarized with a stapled ticket (verification recorded in [TESTING.md](TESTING.md)). These instructions describe how to produce future signed releases.
 
 ## One-time certificate setup
 

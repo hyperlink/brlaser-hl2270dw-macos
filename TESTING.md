@@ -33,4 +33,15 @@ Apple accepted notarization submission `f97e9dad-df4b-4eac-a0e2-5013fa63d7d2`. S
 
 v0.1.2 is a packaging-fixes release over v0.1.1. Comparing the `v0.1.1..v0.1.2` source diff, the driver source and the filter build steps in `scripts/build.sh` are unchanged; the changes are in `scripts/build-pkg.sh` and the other release scripts: the installer is now a `productbuild` distribution that gates host architecture (arm64) and minimum OS (11.0) and shows the GPL in Installer, the payload ships an uninstaller and a `BUILD-INFO` file, and the bundled source is built from the committed tree at `HEAD` for reproducibility. Whether the recompiled v0.1.2 filter binary is byte-identical to v0.1.1's has not been checked here; rebuilding and timestamped signing can change the bytes even when the source does not.
 
-Because the installer is rebuilt by the changed `build-pkg.sh`, the v0.1.2 `.pkg` is not byte-identical to the v0.1.1 package and does not inherit v0.1.1's notarization ticket. The signing and notarization evidence recorded above (submission `f97e9dad-df4b-4eac-a0e2-5013fa63d7d2`) is for the v0.1.1 package. No signing or notarization results for the v0.1.2 `.pkg` itself have been recorded here; follow [SIGNING.md](SIGNING.md) to produce and record them before publishing v0.1.2 as signed and notarized.
+Because the installer is rebuilt by the changed `build-pkg.sh`, the v0.1.2 `.pkg` is not byte-identical to the v0.1.1 package and does not inherit v0.1.1's notarization ticket, so it was signed and notarized as its own artifact (recorded below).
+
+### Signed v0.1.2 package
+
+The published release asset `brlaser-hl2270dw-macos-0.1.2.pkg` was verified by downloading it from the [v0.1.2 release](https://github.com/hyperlink/brlaser-hl2270dw-macos/releases/tag/v0.1.2) and checking it against the release `SHA256SUMS`:
+
+- SHA-256: `d209b4b938945294e91eba51a999ae9f8f4872cc30b450725a565fb1e60d3d5b` (matches `SHA256SUMS`).
+- `pkgutil --check-signature`: signed by **Developer ID Installer: Geneir Solutions (WJAH522JYJ)**, "trusted by the Apple notary service," trusted timestamp 2026-10-12 15:47:31 UTC.
+- `xcrun stapler validate`: the stapled notarization ticket validates.
+- `spctl --assess --type install --verbose=2`: `accepted`, `source=Notarized Developer ID`.
+
+These checks confirm the exact published artifact's signature, stapled notarization, and Gatekeeper acceptance. They do not replace physical printer testing or a separate clean-Mac installation.
