@@ -23,7 +23,7 @@ while [[ $# -gt 0 ]]; do
     *) usage >&2; exit 2 ;;
   esac
 done
-[[ $(uname -s) == Darwin && $(uname -m) == arm64 ]] || { echo 'Requires an Apple silicon Mac.' >&2; exit 1; }
+[[ $(uname -s) == Darwin && $(/usr/sbin/sysctl -n hw.optional.arm64 2>/dev/null) == 1 ]] || { echo 'Requires an Apple silicon Mac.' >&2; exit 1; }
 [[ "$QUEUE" =~ ^[A-Za-z0-9_][A-Za-z0-9_-]*$ ]] || { echo 'Invalid queue name.' >&2; exit 2; }
 [[ "$PAPER" == Letter || "$PAPER" == A4 ]] || { echo 'Paper must be Letter or A4.' >&2; exit 2; }
 if [[ -n "$COPY_FROM" ]]; then
@@ -40,7 +40,7 @@ case "$URI" in
 esac
 [[ "$URI" != *$'\n'* && "$URI" != *$'\r'* && "$URI" != *'@'* ]] || { echo 'Control characters and credentials in URIs are not supported.' >&2; exit 2; }
 [[ -f "$ROOT/build/rastertobrlaser" && -f "$ROOT/build/Brother-HL2270DW-brlaser-arm64.ppd" ]] || { echo 'Build first with ./scripts/build.sh or use the full release archive.' >&2; exit 1; }
-/usr/bin/file "$ROOT/build/rastertobrlaser" | /usr/bin/grep -q arm64
+[[ $(/usr/bin/lipo -archs "$ROOT/build/rastertobrlaser") == *arm64* ]] || { echo 'Built filter is not arm64.' >&2; exit 1; }
 /usr/bin/codesign --verify "$ROOT/build/rastertobrlaser"
 if /usr/bin/lpstat -p "$QUEUE" >/dev/null 2>&1; then
   echo "Queue $QUEUE already exists. Choose a new --queue name; existing queues are never overwritten." >&2
