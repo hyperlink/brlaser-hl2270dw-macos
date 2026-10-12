@@ -1,130 +1,73 @@
 # HL-2270DW HQ1200 printing on Apple silicon
 
-An unofficial macOS build and installer for [Peter De Wachter's brlaser](https://github.com/pdewacht/brlaser), focused on restoring **HQ1200** printing on the **Brother HL-2270DW** after migrating from an Intel Mac to Apple silicon.
+An unofficial macOS build and installer for [Peter De Wachter's brlaser](https://github.com/pdewacht/brlaser), restoring **HQ1200** printing on the **Brother HL-2270DW** on Apple silicon Macs.
 
-The printer driver and high-resolution support come from brlaser. This project provides a native ARM64 build, a model-specific CUPS PPD, installation/removal scripts, and source-complete release packaging. It is not an official Brother driver or a new implementation of the printing protocol.
+This project adds a native ARM64 build, a model-specific CUPS PPD, install/remove scripts, and source-complete release packaging. It is not an official Brother driver.
 
-## What has been tested
+HQ1200 is Brother's high-quality mode (a 1200 × 1200 raster sent with `RAS1200MODE = TRUE`, `RESOLUTION = 600`), not native 1200 DPI optics. The queue offers 300 DPI, 600 DPI, and HQ1200 (default).
 
-- Brother HL-2270DW over a network, on an Apple silicon Mac running macOS 27.0.1.
-- One physical HQ1200 test page, confirmed by its owner to have correct small text and fine lines.
-- The original migrated Brother Intel filter failed with `Bad CPU type in executable`; the ARM64 brlaser filter printed successfully.
-- Letter paper, single-sided, HQ1200; see [TESTING.md](TESTING.md) for limits and packaging validation.
+## Tested
 
-HQ1200 is Brother's high-quality mode, not a claim of native 1200 × 1200 optical resolution. brlaser accepts a 1200 × 1200 raster and sends `RAS1200MODE = TRUE` with `RESOLUTION = 600`, following its upstream implementation. The queue offers 300 DPI, 600 DPI, and HQ1200. HQ1200 is the default.
+- HL-2270DW over network on an Apple silicon Mac, macOS 27.0.1, Letter / single-sided / HQ1200.
+- One physical HQ1200 test page confirmed correct. The migrated Intel Brother filter failed with `Bad CPU type in executable`; the ARM64 brlaser filter printed fine.
+- Other models, USB, duplex, older macOS, and installing a downloaded `.pkg` on a clean Mac are untested. See [TESTING.md](TESTING.md).
 
-Other models, USB connections, duplex, and older macOS releases have not been physically tested by this project. The code targets macOS 11 or newer, but that deployment target is not a compatibility guarantee. CUPS/PPD printing must still be available on the installed macOS version.
+## Install the signed .pkg (recommended)
 
-## Install the signed, notarized package (recommended)
+1. Download `brlaser-hl2270dw-macos-0.1.2.pkg` from [v0.1.2](https://github.com/hyperlink/brlaser-hl2270dw-macos/releases/tag/v0.1.2) (Developer ID signed and Apple-notarized, identity **Geneir Solutions**; verification recorded in [TESTING.md](TESTING.md)).
+2. Open it and follow the Installer prompts.
+3. In **System Settings > Printers & Scanners**, add your HL-2270DW. Under **Use > Select Software**, choose **Brother HL-2270DW series, using brlaser v6 (Apple silicon HQ1200)**.
+4. Pick HQ1200 and your paper size in the print dialog, then print.
 
-1. Download `brlaser-hl2270dw-macos-0.1.2.pkg` from [v0.1.2](https://github.com/hyperlink/brlaser-hl2270dw-macos/releases/tag/v0.1.2) under **Assets**. The release also includes matching source and `SHA256SUMS`.
-2. Open it and follow the macOS Installer prompts. The signing identity is **Geneir Solutions**. The driver and installer are Developer ID signed; the installer is Apple-notarized with a stapled ticket.
-3. In **System Settings > Printers & Scanners**, add your HL-2270DW. In **Use > Select Software**, choose **Brother HL-2270DW series, using brlaser v6 (Apple silicon HQ1200)**.
-4. Select HQ1200 and your paper size in the print dialog, then print a test page. Letter is the default.
-
-The package installs driver files, license notices, and complete corresponding source. It does not create a printer queue or change your existing/default printer. The installed source is `/Library/Printers/brlaser-hl2270dw/Source.tar.gz`. A separate matching source download is also attached to the release.
-
-Notarization and Gatekeeper checks passed on the signing Mac. Installation of a browser-downloaded package on a separate clean Mac remains untested. See [TESTING.md](TESTING.md).
-
-## Legacy v0.1.0 archive installation
-
-1. Download `brlaser-hl2270dw-macos-0.1.0.tar.gz` and `SHA256SUMS` from [Releases](https://github.com/hyperlink/brlaser-hl2270dw-macos/releases). The archive contains the ARM64 executable **and all its corresponding source**.
-2. In Terminal, change to the download folder, verify the checksum, and extract:
-
-   ```sh
-   shasum -a 256 -c SHA256SUMS
-   tar -xzf brlaser-hl2270dw-macos-0.1.0.tar.gz
-   cd brlaser-hl2270dw-macos-0.1.0
-   ```
-
-3. Run `lpstat -v` to find your existing printer's queue name. For example, if it says `device for Brother_HL_2270DW_series: ...`, preview and install with:
-
-   ```sh
-   ./scripts/install.sh --copy-uri-from Brother_HL_2270DW_series --dry-run
-   sudo ./scripts/install.sh --copy-uri-from Brother_HL_2270DW_series
-   ```
-
-   Substitute your own existing queue name. Alternatively supply an explicit printer address:
-
-   ```sh
-   sudo ./scripts/install.sh --uri 'socket://YOUR_PRINTER_IP:9100' --paper A4
-   ```
-
-4. Select **Brother HL-2270DW HQ1200** in the application's print dialog and print a test page. The Resolution option should default to HQ1200; `lpoptions -p Brother_HL_2270DW_HQ1200 -l` shows it as `*1200dpi`.
-
-The installer creates a separate queue, keeps your existing queue, and leaves the default printer unchanged. It refuses to overwrite an existing queue name; use `--queue Another_Name` if needed. Letter is the default paper size; use `--paper A4` for A4. The queue is not shared over the network.
-
-**Legacy archive signing:** the v0.1.0 executable has an ad-hoc signature, not an Apple Developer ID signature, and this release is not notarized. A checksum checks download integrity, not publisher identity. macOS security settings may prevent downloaded code from running. Building from the included source is an alternative; this project does not require disabling SIP or Gatekeeper.
+The package installs driver files only. It does not create a queue or change your default printer. Complete source ships at `/Library/Printers/brlaser-hl2270dw/Source.tar.gz` and is also attached to the release.
 
 ## Build from source
 
-Requires an Apple silicon Mac, Apple's Command Line Tools (`xcode-select --install` if absent), and the macOS `ppdc`/`cupstestppd` utilities. No Homebrew libraries or Rosetta are needed.
+Requires an Apple silicon Mac, Apple's Command Line Tools (`xcode-select --install`), and the macOS `ppdc`/`cupstestppd` utilities (used by `build.sh` and `test.sh`). No Homebrew or Rosetta needed; builds link only to macOS system libraries.
 
 ```sh
 git clone https://github.com/hyperlink/brlaser-hl2270dw-macos.git
 cd brlaser-hl2270dw-macos
 ./scripts/build.sh
 ./scripts/test.sh
-./scripts/install.sh --copy-uri-from YOUR_EXISTING_QUEUE --dry-run
 sudo ./scripts/install.sh --copy-uri-from YOUR_EXISTING_QUEUE
 ```
 
-Builds link only to macOS's system CUPS, C++, and system libraries. The upstream source is vendored at a recorded commit; the build does not download or execute a remote installer. No proprietary Brother files are needed.
+Run `lpstat -v` to find your existing queue name. Add `--dry-run` to preview, `--uri 'socket://IP:9100'` for an explicit address, or `--paper A4` for A4 (Letter is default). The installer creates a separate queue, leaves your existing queue and default printer unchanged, and refuses to overwrite a queue (use `--queue Another_Name`).
 
 ## Remove
+
+Script install:
 
 ```sh
 sudo ./scripts/uninstall.sh Brother_HL_2270DW_HQ1200
 ```
 
-Use the queue name you chose at installation. The script checks that the selected queue belongs to this package, removes it, and removes the driver files only if no other queue uses them. It does not restore a previously chosen default printer; select your remaining queue in macOS if needed.
-
-### Remove (installed from .pkg)
-
-The package ships its own uninstaller at `/Library/Printers/brlaser-hl2270dw/uninstall.sh`. Pass the queue name you created in **System Settings > Printers & Scanners** (the package does not create a queue, so there is no default name to assume — a common one is `Brother_HL_2270DW_series`):
+Package install (ships its own uninstaller; pass the real name of the queue you created — the script refuses if you name a queue that doesn't match or if another queue still uses the driver):
 
 ```sh
 sudo /Library/Printers/brlaser-hl2270dw/uninstall.sh YOUR_QUEUE_NAME
 ```
 
-It removes the queue, deletes the driver files when no other queue uses them, and runs `pkgutil --forget io.github.hyperlink.brlaser.hl2270dw` so the package receipt no longer reports the driver as installed. If you did not create a queue, run it with any placeholder name to remove the driver files and the receipt only.
+If you never created a queue, run it with any placeholder name to remove the driver files and the package receipt only.
 
-Installed files:
-
-- `/Library/Printers/brlaser-hl2270dw/rastertobrlaser`
-- `/Library/Printers/brlaser-hl2270dw/LICENSE`
-- `/Library/Printers/brlaser-hl2270dw/NOTICE.md`
-- `/Library/Printers/brlaser-hl2270dw/Source.tar.gz`
-- `/Library/Printers/brlaser-hl2270dw/BUILD-INFO`
-- `/Library/Printers/brlaser-hl2270dw/uninstall.sh`
-- `/Library/Printers/PPDs/Contents/Resources/brlaser-hl2270dw-macos.ppd`
-- The package receipt `io.github.hyperlink.brlaser.hl2270dw` (pkg installs).
-- The CUPS queue and its system-managed configuration.
+Removal deletes the queue and driver files (when no other queue uses them). It does not restore a previous default printer.
 
 ## Troubleshooting
 
-- **No output:** check `lpstat -p` and `lpstat -o`, printer power/network access, and the URI copied from the working queue.
-- **Wrong paper size:** choose Letter/A4 in the print dialog and application page setup.
-- **HQ1200 missing:** confirm you selected the new queue, rather than Generic PCL or the migrated Brother queue. In some apps, Resolution is under Printer Features.
-- **Queue already exists:** choose a new `--queue` name or intentionally uninstall the package's old queue first. Do not remove your working fallback merely to install this package.
-- **Bad CPU type:** confirm the queue references this ARM64 driver. `file /Library/Printers/brlaser-hl2270dw/rastertobrlaser` should report `arm64`.
+- **No output:** check `lpstat -p`, `lpstat -o`, printer power/network, and the queue URI.
+- **HQ1200 missing:** confirm the new queue is selected (not Generic PCL or the migrated Brother queue). Resolution may be under Printer Features.
+- **Bad CPU type:** confirm the queue uses the ARM64 driver — `file /Library/Printers/brlaser-hl2270dw/rastertobrlaser` should report `arm64`.
+- **Queue already exists:** use a new `--queue` name.
 
-When reporting problems, include macOS version, chip family, connection type, selected resolution, and a description of the output. Remove usernames, document names, printer serial numbers, network addresses, and other private information from logs before posting them. Do not post passwords.
+When reporting problems, include macOS version, chip, connection type, and selected resolution. Scrub usernames, document names, serial numbers, network addresses, and passwords from logs first.
 
 ## License and credit
 
-brlaser is Copyright © 2013 Peter De Wachter and other contributors, licensed under **GPL-2.0-or-later**. Packaging additions use the same license. Full upstream notices and the test library's Boost license are preserved. See [LICENSE](LICENSE), [NOTICE.md](NOTICE.md), and [LEGAL.md](LEGAL.md).
+brlaser is © 2013 Peter De Wachter and contributors under **GPL-2.0-or-later**; packaging additions use the same license. See [LICENSE](LICENSE), [NOTICE.md](NOTICE.md), and [LEGAL.md](LEGAL.md).
 
-Brother is a trademark of Brother Industries, Ltd. This independent community project is not affiliated with or endorsed by Brother or Apple. Software is provided without warranty under its license.
+Brother is a trademark of Brother Industries, Ltd. This independent community project is not affiliated with Brother or Apple, and comes with no warranty.
 
 ## Creating a release
 
-For Developer ID signing and a notarized `.pkg`, see [SIGNING.md](SIGNING.md). This requires certificates and Apple notarization acceptance; the existing v0.1.0 download remains unnotarized.
-
-After building, running tests, and reviewing [TESTING.md](TESTING.md):
-
-```sh
-./scripts/package.sh
-```
-
-Publish the resulting archive and `SHA256SUMS` together. The archive includes the binary, generated PPD, complete upstream source, build/install scripts, license, and notices. Keep the matching source available for every binary release; a link to a moving upstream branch alone is not a substitute.
+See [SIGNING.md](SIGNING.md) for Developer ID signing and notarization. After building, testing, and reviewing [TESTING.md](TESTING.md), run `./scripts/package.sh` and publish the archive with `SHA256SUMS`. Always keep matching source available for every binary release.
