@@ -10,7 +10,7 @@ NAME="brlaser-hl2270dw-macos-$VERSION"
 [[ ! -e "dist/$NAME" ]] || { echo "dist/$NAME already exists; move it before rebuilding." >&2; exit 1; }
 mkdir -p "dist/$NAME/build"
 cp -R scripts vendor tests "dist/$NAME/"
-cp README.md LICENSE NOTICE.md LEGAL.md TESTING.md VERSION "dist/$NAME/"
+cp README.md LICENSE NOTICE.md LEGAL.md TESTING.md SIGNING.md VERSION "dist/$NAME/"
 cp build/rastertobrlaser build/Brother-HL2270DW-brlaser-arm64.ppd "dist/$NAME/build/"
 # Include all corresponding source and installation/build scripts in the binary archive.
 COPYFILE_DISABLE=1 tar --uid 0 --gid 0 --uname root --gname wheel -czf "dist/$NAME.tar.gz" -C dist "$NAME"

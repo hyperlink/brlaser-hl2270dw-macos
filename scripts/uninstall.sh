@@ -18,5 +18,6 @@ for other in /etc/cups/ppd/*.ppd; do
   fi
 done
 rm -f "$FILTER" /Library/Printers/PPDs/Contents/Resources/brlaser-hl2270dw-macos.ppd
+rm -f /Library/Printers/brlaser-hl2270dw/Source.tar.gz /Library/Printers/brlaser-hl2270dw/LICENSE /Library/Printers/brlaser-hl2270dw/NOTICE.md
 if [[ -d /Library/Printers/brlaser-hl2270dw ]]; then rmdir /Library/Printers/brlaser-hl2270dw; fi
 echo 'Removed this project’s queue and driver files. Other printer drivers were not removed.'

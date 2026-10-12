@@ -92,6 +92,8 @@ Brother is a trademark of Brother Industries, Ltd. This independent community pr
 
 ## Creating a release
 
+For Developer ID signing and a notarized `.pkg`, see [SIGNING.md](SIGNING.md). This requires certificates and Apple notarization acceptance; the existing v0.1.0 download remains unnotarized.
+
 After building, running tests, and reviewing [TESTING.md](TESTING.md):
 
 ```sh
