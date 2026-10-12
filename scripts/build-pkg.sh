@@ -21,7 +21,11 @@ fi
 [[ -z "$(git status --porcelain)" ]] || { echo 'Working tree is dirty. Commit or stash changes first.' >&2; exit 1; }
 COMMIT=$(git rev-parse HEAD)
 STAGE=$(mktemp -d /private/tmp/brlaser-pkg-stage.XXXXXX)
-trap 'rm -rf "$STAGE"' EXIT
+# Keep the component package and distribution artifacts out of the payload root:
+# pkgbuild --root scoops up anything under STAGE, so component.pkg (and its temp
+# build files) must live in a separate directory (P2).
+BUILDDIR=$(mktemp -d /private/tmp/brlaser-pkg-build.XXXXXX)
+trap 'rm -rf "$STAGE" "$BUILDDIR"' EXIT
 DRIVER="$STAGE/Library/Printers/brlaser-hl2270dw"
 mkdir -p "$DRIVER" "$STAGE/Library/Printers/PPDs/Contents/Resources" dist
 cp build/rastertobrlaser "$DRIVER/"
@@ -56,10 +60,10 @@ OUT="dist/brlaser-hl2270dw-macos-$VERSION$SUFFIX.pkg"
 # notarizable artifact is the productbuild output.
 pkgbuild --root "$STAGE" --filter '(^|/)\._' --ownership recommended --install-location / \
   --identifier io.github.hyperlink.brlaser.hl2270dw --version "$VERSION" \
-  "$STAGE/component.pkg"
-mkdir -p "$STAGE/res"
-cp LICENSE "$STAGE/res/LICENSE"
-cat > "$STAGE/distribution.xml" <<EOF
+  "$BUILDDIR/component.pkg"
+mkdir -p "$BUILDDIR/res"
+cp LICENSE "$BUILDDIR/res/LICENSE"
+cat > "$BUILDDIR/distribution.xml" <<EOF
 <?xml version="1.0" encoding="utf-8"?>
 <installer-gui-script minSpecVersion="2">
   <title>brlaser for Brother HL-2270DW</title>
@@ -72,8 +76,8 @@ cat > "$STAGE/distribution.xml" <<EOF
   <pkg-ref id="io.github.hyperlink.brlaser.hl2270dw" version="$VERSION">component.pkg</pkg-ref>
 </installer-gui-script>
 EOF
-productbuild --distribution "$STAGE/distribution.xml" --package-path "$STAGE" \
-  --resources "$STAGE/res" ${SIGN_ARGS[@]+"${SIGN_ARGS[@]}"} "$OUT"
+productbuild --distribution "$BUILDDIR/distribution.xml" --package-path "$BUILDDIR" \
+  --resources "$BUILDDIR/res" ${SIGN_ARGS[@]+"${SIGN_ARGS[@]}"} "$OUT"
 if ! $UNSIGNED; then pkgutil --check-signature "$OUT"; fi
 echo "Created $OUT. This package installs driver files only; add the printer in macOS settings."
 echo 'It is NOT notarized yet. Do not describe it as notarized until acceptance and stapling succeed.'

@@ -31,7 +31,8 @@ for other in /etc/cups/ppd/*.ppd; do
 done
 rm -f "$FILTER" /Library/Printers/PPDs/Contents/Resources/brlaser-hl2270dw-macos.ppd
 rm -f /Library/Printers/brlaser-hl2270dw/Source.tar.gz /Library/Printers/brlaser-hl2270dw/LICENSE \
-  /Library/Printers/brlaser-hl2270dw/NOTICE.md /Library/Printers/brlaser-hl2270dw/uninstall.sh
+  /Library/Printers/brlaser-hl2270dw/NOTICE.md /Library/Printers/brlaser-hl2270dw/uninstall.sh \
+  /Library/Printers/brlaser-hl2270dw/BUILD-INFO
 if [[ -d /Library/Printers/brlaser-hl2270dw ]]; then
   rmdir /Library/Printers/brlaser-hl2270dw 2>/dev/null || echo 'Left /Library/Printers/brlaser-hl2270dw (not empty).'
 fi
