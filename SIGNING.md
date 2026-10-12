@@ -1,6 +1,6 @@
 # Developer ID signing and notarization
 
-The v0.1.2 installer is Developer ID signed and Apple-notarized with a stapled ticket. The older v0.1.0 archive remains ad-hoc signed and unnotarized. These instructions describe how to produce future signed releases.
+These instructions describe how to produce a Developer ID signed, Apple-notarized installer. The recorded notarization evidence (see [TESTING.md](TESTING.md)) covers the v0.1.1 package; the v0.1.2 package is rebuilt by the updated `build-pkg.sh` and must be re-notarized before being published as notarized.
 
 ## One-time certificate setup
 
@@ -29,7 +29,7 @@ Follow its prompts for the account, team, and an app-specific password (or confi
 
 ## Build and sign
 
-Choose a new VERSION for a new release; do not silently replace the existing v0.1.0 download. From the repository root:
+Choose a new VERSION for a new release; do not replace an existing release's published assets. From the repository root:
 
 ```sh
 ./scripts/build.sh
@@ -73,7 +73,7 @@ Before publishing, test the signed driver through CUPS, download/install the fin
 
 ## What the installer does
 
-The `.pkg` installs the native filter, model PPD, source, and notices. It does not discover printers, create a queue, change the default printer, or run printer setup as root. After installation, add the printer in System Settings > Printers & Scanners and choose the `Brother HL-2270DW series, using brlaser v6 (Apple silicon HQ1200)` software entry. Select HQ1200 and the appropriate paper size, then test print. The tar archive's existing CLI installation path remains available.
+The `.pkg` installs the native filter, model PPD, source, and notices. It does not discover printers, create a queue, change the default printer, or run printer setup as root. After installation, add the printer in System Settings > Printers & Scanners and choose the `Brother HL-2270DW series, using brlaser v6 (Apple silicon HQ1200)` software entry. Select HQ1200 and the appropriate paper size, then test print. The install scripts' CLI path remains available for building from source.
 
 The uninstall script removes the package's known files and forgets its installation receipt once no other queue uses the driver.
 
