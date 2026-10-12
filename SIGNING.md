@@ -1,6 +1,6 @@
 # Developer ID signing and notarization
 
-The v0.1.1 installer is Developer ID signed and Apple-notarized with a stapled ticket. The older v0.1.0 archive remains ad-hoc signed and unnotarized. These instructions describe how to produce future signed releases.
+The v0.1.2 installer is Developer ID signed and Apple-notarized with a stapled ticket. The older v0.1.0 archive remains ad-hoc signed and unnotarized. These instructions describe how to produce future signed releases.
 
 ## One-time certificate setup
 
@@ -75,6 +75,6 @@ Before publishing, test the signed driver through CUPS, download/install the fin
 
 The `.pkg` installs the native filter, model PPD, source, and notices. It does not discover printers, create a queue, change the default printer, or run printer setup as root. After installation, add the printer in System Settings > Printers & Scanners and choose the `Brother HL-2270DW series, using brlaser v6 (Apple silicon HQ1200)` software entry. Select HQ1200 and the appropriate paper size, then test print. The tar archive's existing CLI installation path remains available.
 
-The uninstall script removes the package's known files once no other queue uses them. macOS may retain the installation receipt; `sudo pkgutil --forget io.github.hyperlink.brlaser.hl2270dw` removes that receipt after uninstalling.
+The uninstall script removes the package's known files and forgets its installation receipt once no other queue uses the driver.
 
 References: [Apple notarization overview](https://developer.apple.com/documentation/security/notarizing-macos-software-before-distribution), [Developer ID](https://developer.apple.com/developer-id/).

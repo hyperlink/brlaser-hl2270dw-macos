@@ -17,7 +17,7 @@ Other models, USB connections, duplex, and older macOS releases have not been ph
 
 ## Install the signed, notarized package (recommended)
 
-1. Download `brlaser-hl2270dw-macos-0.1.1.pkg` from [v0.1.1](https://github.com/hyperlink/brlaser-hl2270dw-macos/releases/tag/v0.1.1).
+1. Download `brlaser-hl2270dw-macos-0.1.2.pkg` from [v0.1.2](https://github.com/hyperlink/brlaser-hl2270dw-macos/releases/tag/v0.1.2) under **Assets**. The release also includes matching source and `SHA256SUMS`.
 2. Open it and follow the macOS Installer prompts. The signing identity is **Geneir Solutions**. The driver and installer are Developer ID signed; the installer is Apple-notarized with a stapled ticket.
 3. In **System Settings > Printers & Scanners**, add your HL-2270DW. In **Use > Select Software**, choose **Brother HL-2270DW series, using brlaser v6 (Apple silicon HQ1200)**.
 4. Select HQ1200 and your paper size in the print dialog, then print a test page. Letter is the default.
