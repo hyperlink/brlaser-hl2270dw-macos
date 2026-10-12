@@ -15,7 +15,21 @@ for name in lest line block job; do
   echo "PASS: upstream test_$name"
 done
 cupstestppd -I filters build/Brother-HL2270DW-brlaser-arm64.ppd
-file build/rastertobrlaser | grep -q 'arm64'
+# Assert the PPD customizations that no cupstestppd check covers (M3).
+PPD=build/Brother-HL2270DW-brlaser-arm64.ppd
+for want in \
+  '*cupsFilter: "application/vnd.cups-raster 33 /Library/Printers/brlaser-hl2270dw/rastertobrlaser"' \
+  '*DefaultResolution: 1200dpi' \
+  '*DefaultPageSize: Letter' \
+  '*DefaultPageRegion: Letter' \
+  '*DefaultImageableArea: Letter' \
+  '*DefaultPaperDimension: Letter' \
+  '*NickName: "Brother HL-2270DW series, using brlaser v6 (Apple silicon HQ1200)"'; do
+  grep -Fxq -- "$want" "$PPD" || { echo "PPD check failed: $want" >&2; exit 1; }
+done
+grep -Fq '*Resolution 1200dpi/HQ1200:' "$PPD" || { echo 'PPD check failed: HQ1200 label' >&2; exit 1; }
+echo 'PASS: PPD customizations (filter path, HQ1200, Letter defaults, NickName).'
+[[ $(/usr/bin/lipo -archs build/rastertobrlaser) == *arm64* ]] || { echo 'Filter is not arm64.' >&2; exit 1; }
 otool -L build/rastertobrlaser
 clang++ -std=c++11 tests/raster_fixture.cc -lcups -o build/tests/raster_fixture
 for resolution in 600 1200; do

@@ -79,10 +79,26 @@ sudo ./scripts/uninstall.sh Brother_HL_2270DW_HQ1200
 
 Use the queue name you chose at installation. The script checks that the selected queue belongs to this package, removes it, and removes the driver files only if no other queue uses them. It does not restore a previously chosen default printer; select your remaining queue in macOS if needed.
 
+### Remove (installed from .pkg)
+
+The package ships its own uninstaller at `/Library/Printers/brlaser-hl2270dw/uninstall.sh`. Pass the queue name you created in **System Settings > Printers & Scanners** (the package does not create a queue, so there is no default name to assume — a common one is `Brother_HL_2270DW_series`):
+
+```sh
+sudo /Library/Printers/brlaser-hl2270dw/uninstall.sh YOUR_QUEUE_NAME
+```
+
+It removes the queue, deletes the driver files when no other queue uses them, and runs `pkgutil --forget io.github.hyperlink.brlaser.hl2270dw` so the package receipt no longer reports the driver as installed. If you did not create a queue, run it with any placeholder name to remove the driver files and the receipt only.
+
 Installed files:
 
 - `/Library/Printers/brlaser-hl2270dw/rastertobrlaser`
+- `/Library/Printers/brlaser-hl2270dw/LICENSE`
+- `/Library/Printers/brlaser-hl2270dw/NOTICE.md`
+- `/Library/Printers/brlaser-hl2270dw/Source.tar.gz`
+- `/Library/Printers/brlaser-hl2270dw/BUILD-INFO`
+- `/Library/Printers/brlaser-hl2270dw/uninstall.sh`
 - `/Library/Printers/PPDs/Contents/Resources/brlaser-hl2270dw-macos.ppd`
+- The package receipt `io.github.hyperlink.brlaser.hl2270dw` (pkg installs).
 - The CUPS queue and its system-managed configuration.
 
 ## Troubleshooting
